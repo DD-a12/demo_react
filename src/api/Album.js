@@ -28,15 +28,22 @@ export const Album = {
     return fetch(`${baseUrl}/albums/${id}`, {
       method: "PATCH",
       credentials: "include",
-      // headers: {
-      //   Accept: "application/json"
-      // },
+      headers: {
+        Accept: "application/json"
+      },
       body: params
     }).then(res => res.json());
   },
   
   destroy(id) {
     return fetch(`${baseUrl}/albums/${id}`, {
+      credentials: "include",
+      method: "DELETE"
+    }).then(res => res.json());
+  },
+
+  destroyPics(album_id , id) {
+    return fetch(`${baseUrl}/albums/${album_id}/pictures/${id}`, {
       credentials: "include",
       method: "DELETE"
     }).then(res => res.json());

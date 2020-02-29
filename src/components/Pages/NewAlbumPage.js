@@ -12,7 +12,7 @@ export const NewAlbumPage = props => {
     const fd = new FormData(currentTarget);
     const newAlbum = {
       title: fd.get("title"),
-      description: fd.get("description")
+      description: fd.get("description"),
     };
 
     Album.create(newAlbum).then(data => {
