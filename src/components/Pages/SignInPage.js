@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { Button, Form, Grid, Header, Message, Segment } from 'semantic-ui-react'
 
 import { Session } from "../../api/Session";
 
@@ -18,7 +19,7 @@ export const SignInPage = props => {
       if (data.status === 404) {
         setErrors([...errors, { message: "Wrong Email or Password" }]);
       } else {
-        props.history.push("/");
+        props.history.push("/albums");
         if (typeof props.onSignIn === "function") {
           props.onSignIn();
         }
@@ -26,32 +27,37 @@ export const SignInPage = props => {
     });
   };
   return (
-    <div className="ui clearing segment Page">
-      <h1 className="ui center aligned header">Sign In</h1>
-      <form className="ui large form" onSubmit={createSession}>
-        {errors.length > 0 ? (
-          <div className="ui negative message">
-            <div className="header">Failed to Sign In</div>
-            <p>{errors.map(error => error.message).join(", ")}</p>
-          </div>
-        ) : (
-          ""
-        )}
-        <div className="field">
-          <label htmlFor="email">Email</label>
-          <input type="email" name="email" id="email" required />
-        </div>
-        <div className="field">
-          <label htmlFor="password">Password</label>
-          <input type="password" name="password" id="password" required />
-        </div>
+    <Grid className="background" 
+      textAlign='center' 
+      style={{ height: '100vh' }} 
+      verticalAlign='middle'
+    >
+    <Grid.Column style={{ maxWidth: 450 }}>
+      <h1 style={{ color: "white", fontSize:' 5em', marginBottom:"0px" }} textAlign='center'>
+        MOMENT
+      </h1>
+  <p style={{textAlign:'center', color:'white', fontSize:"1.5em", marginTop:"0px"  }}><strong>PERSONAL PHOTO ALBUM</strong></p>
+      <Form size='large' onSubmit={createSession} >
+        <Segment stacked>
+          <Form.Input name="email" type="email" fluid icon='user' iconPosition='left' placeholder='E-mail address' />
+          <Form.Input
+            fluid
+            icon='lock'
+            iconPosition='left'
+            placeholder='Password'
+            name="password"
+            type='password'
+          />
 
-        <input
-          className="ui right floated orange button"
-          type="submit"
-          value="Sign In"
-        />
-      </form>
-    </div>
+          <Button color='teal' fluid size='large' type="submit" >
+            Login
+          </Button>
+        </Segment>
+      </Form>
+      <Message>
+        New to us? <a href='/sign_up'>Sign Up</a>
+      </Message>
+    </Grid.Column>
+  </Grid>
   );
 };

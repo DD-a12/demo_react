@@ -11,9 +11,9 @@ import { NotFoundPage } from "./Pages/NotFoundPage";
 import { SignInPage } from "./Pages/SignInPage"
 import { AlbumIndexPage } from "./Pages/AlbumIndexPage";
 import { SignUpPage } from "./Pages/SignUpPage";
-import { HomePage } from "./Pages/HomePage";
-import { NewAlbumPage } from "./Pages/NewAlbumPage"
-import { AlbumShowPage }  from "./Pages/AlbumShowPage"
+import { NewAlbumPage } from "./Pages/NewAlbumPage";
+import { AlbumShowPage }  from "./Pages/AlbumShowPage";
+import './Assets/Css/Album.css'
 
 const App = () => {
     const [currentUser, setCurrentUser] = useState(null);
@@ -37,35 +37,38 @@ const App = () => {
     }, [getUser]);
 
     return (
-        <BrowserRouter>
-          <header>
-            <NavBar
-              currentUser={currentUser}
-              onSignOut={destroySession}
+      <>
+        {!currentUser ? (
+          <BrowserRouter>
+            <Route
+              path="/sign_up"
+              render={routeProps => (
+                <SignUpPage {...routeProps} onSignUp={getUser} />
+              )}
             />
-          </header>
-          <div className="ui container segment">
-            <Switch>
-              <Route exact path="/" component={HomePage} />
+          <Route    
+            path="/"
+            render={routeProps => (
+              <SignInPage {...routeProps} onSignIn={getUser} />
+              )}
+              />
+          </BrowserRouter>
+        ): (
+          <BrowserRouter>
+            <header>
+              <NavBar
+                currentUser={currentUser}
+                onSignOut={destroySession}
+                />
+            </header>
+              <Switch>
               <Route exact path="/albums" component={AlbumIndexPage} />
-              <Route
-                path="/sign_up"
-                render={routeProps => (
-                  <SignUpPage {...routeProps} onSignUp={getUser} />
-                )}
-              />
-              <Route    
-                path="/sign_in"
-                render={routeProps => (
-                  <SignInPage {...routeProps} onSignIn={getUser} />
-                )}
-              />
               <AuthRoute
                 isAuthenticated={!!currentUser}
                 component={NewAlbumPage}
                 path="/albums/new"
                 exact
-              />
+                />
               <AuthRoute
                 isAuthenticated={!!currentUser}
                 component={AlbumShowPage}
@@ -74,8 +77,9 @@ const App = () => {
               />
               <Route component={NotFoundPage} />
             </Switch>
-          </div>
-        </BrowserRouter>
+          </BrowserRouter>
+        )}
+      </>
     );
 }
 

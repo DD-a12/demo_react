@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
 
 import { Album } from "../../api/Album"; 
 import { Spinner } from "../Spinner";
@@ -9,15 +8,22 @@ export const AlbumShowPage = props => {
   const [ albumShow, setAlbumShow ] = useState([]);
   const [ isLoading, setIsLoading ] = useState(true);
   const [ errors, setErrors ] = useState([]);
+  const [ pageNumber, setPageNumber ] = useState({
+    activePage: 15
+  });
 
   const currentAlbumId = props.match.params.id
+
+  const handlePageChange = pageNumber => {
+    setPageNumber({activePage: pageNumber});
+  }
 
   const deleteAlbum = () => {
     Album.destroy(currentAlbumId).then(data => {
       if (data.errors) {
         setErrors(data.errors);
       } else {
-        props.history.push(`/albums/${data.id}`);
+        props.history.push(`/albums/`);
       }
     });
   };
@@ -36,7 +42,12 @@ export const AlbumShowPage = props => {
     event.preventDefault();
     const { currentTarget: formNode } = event;
     const fd = new FormData(formNode);
-    
+    const fileLength = document.querySelector('input[type=file]').files.length
+    for (let i = 0; i < fileLength; i++) {
+      fd.append("pictures[]", document.querySelector('input[type=file]').files[i])
+    }
+
+    console.log(fd)
 
     Album.update(currentAlbumId, fd ).then(data => {
       if (data.errors) {
@@ -65,16 +76,18 @@ export const AlbumShowPage = props => {
       <p>
         {albumShow.description}
       </p>
-      <form onSubmit={uploadPics}>
+      <form onSubmit={uploadPics} className="pictures form" >
         <label>Pictures</label>
-        <input type="file" name="pictures" />
+        <input type="file" name="pic" multiple />
         <button className="ui blue button" type="submit">
-          Save Changes
+          upload Pictures
         </button>
       </form>
+      <div className="pictures ul" >
           {albumShow.pictures.map(pic => (
-            <li className="pictures list">
-            <img src={pic.url} />
+            <li className="pictures list" key={pic.id}>
+            <p className="picture title">{pic.content_type}</p>
+            <img src={pic.url} className="picture url" />
             <button
               className="ui small right floated red button"
               onClick={() => deletePicture(pic.id)}
@@ -83,6 +96,7 @@ export const AlbumShowPage = props => {
             </button>
             </li>
           ))}
+      </div>
       <button
       className="ui small right floated red button"
       onClick={() => deleteAlbum()}
